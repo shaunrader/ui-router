@@ -49,6 +49,7 @@ describe('state', function () {
       .state('home', { url: "/" })
       .state('home.item', { url: "front/:id" })
       .state('about', { url: "/about" })
+      .state('about-hash', { url: "/about#hash=:hashValue"})
       .state('about.person', { url: "/:person" })
       .state('about.person.item', { url: "/:id" })
       .state('about.sidebar', {})
@@ -642,6 +643,7 @@ describe('state', function () {
         'HH',
         'HHH',
         'about',
+        'about-hash',
         'about.person',
         'about.person.item',
         'about.sidebar',
@@ -734,6 +736,14 @@ describe('state', function () {
       $q.flush();
 
       expect(replaceWasCalled).toEqual(false);
+    }));
+
+    it('should extract hash parameters', inject(function ($state, $rootScope, $location) {
+      $location.path("/about#hash=test");
+      $rootScope.$broadcast("$locationChangeSuccess");
+      $rootScope.$apply();
+      expect($state.params).toEqual({ hashValue: "test" });
+      expect($state.current.name).toBe('about-hash');
     }));
   });
 
